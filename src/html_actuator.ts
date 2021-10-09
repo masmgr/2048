@@ -64,7 +64,7 @@ class HTMLActuator {
 		const classes = ["tile", "tile-" + tile.value, positionClass];
 
 		if ((tile.value ?? 0) > 2048) {
-			classes.push("tile-super")
+			classes.push("tile-super");
 		}
 
 		this.applyClasses(wrapper, classes);
