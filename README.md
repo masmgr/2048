@@ -11,6 +11,7 @@ This is a practice of modern frontend development.
 
 ## Scheduled Features
 - Use React.
+- Use test code.
 
 ## License
 2048 is licensed under the [MIT license.](https://github.com/gabrielecirulli/2048/blob/master/LICENSE.txt)
