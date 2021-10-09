@@ -70,7 +70,7 @@ class LocalStorageManager {
 	// Game state getters/setters and clearing
 	getGameState(): GameManagerInfo | null {
 		const stateJSON = this.storage.getItem(this.gameStateKey);
-		return stateJSON ? JSON.parse(stateJSON) as GameManagerInfo : null;
+		return stateJSON ? (JSON.parse(stateJSON) as GameManagerInfo) : null;
 	}
 
 	setGameState(gameState: GameManagerInfo): void {

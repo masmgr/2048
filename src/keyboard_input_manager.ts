@@ -1,5 +1,5 @@
 type DirectionFunction = (param?: Direction) => void;
-type ButtonPressFunction = (param:Event) => void;
+type ButtonPressFunction = (param: Event) => void;
 
 class KeyboardInputManager {
 	events: { [name: string]: DirectionFunction[] };
