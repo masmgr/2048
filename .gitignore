@@ -1,1 +1,5 @@
 .sass-cache/
+node_modules/
+js/
+style/*.css
+style/*.css.map
