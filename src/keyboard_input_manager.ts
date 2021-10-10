@@ -1,7 +1,9 @@
-type DirectionFunction = (param?: Direction) => void;
-type ButtonPressFunction = (param: Event) => void;
+import { Direction } from "./game_manager";
 
-class KeyboardInputManager {
+export type DirectionFunction = (param?: Direction) => void;
+export type ButtonPressFunction = (param: Event) => void;
+
+export class KeyboardInputManager {
 	events: { [name: string]: DirectionFunction[] };
 	eventTouchstart: string;
 	eventTouchmove: string;
@@ -17,14 +19,14 @@ class KeyboardInputManager {
 		this.listen();
 	}
 
-	on(event: string, callback: DirectionFunction) {
+	on(event: string, callback: DirectionFunction): void {
 		if (!this.events[event]) {
 			this.events[event] = [];
 		}
 		this.events[event].push(callback);
 	}
 
-	emit(event: string, data?: Direction) {
+	emit(event: string, data?: Direction): void {
 		const callbacks = this.events[event];
 		if (callbacks) {
 			callbacks.forEach((callback: DirectionFunction) => {
@@ -33,7 +35,7 @@ class KeyboardInputManager {
 		}
 	}
 
-	listen() {
+	listen(): void {
 		const map: { [name: number]: Direction } = {
 			38: Direction.Up, // Up
 			39: Direction.Right, // Right
@@ -139,17 +141,17 @@ class KeyboardInputManager {
 		}) as EventListener);
 	}
 
-	restart(event: Event) {
+	restart(event: Event): void {
 		event.preventDefault();
 		this.emit("restart");
 	}
 
-	keepPlaying(event: Event) {
+	keepPlaying(event: Event): void {
 		event.preventDefault();
 		this.emit("keepPlaying");
 	}
 
-	bindButtonPress(selector: string, fn: ButtonPressFunction) {
+	bindButtonPress(selector: string, fn: ButtonPressFunction): void {
 		const button = document.querySelector(selector);
 		button?.addEventListener("click", fn.bind(this));
 		button?.addEventListener(this.eventTouchend, fn.bind(this));

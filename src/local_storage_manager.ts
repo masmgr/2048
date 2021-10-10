@@ -1,83 +1,87 @@
-interface Window {
-	fakeStorage: FakeStorage;
-}
+import { GameManagerInfo } from "./game_manager";
 
 class FakeStorage implements Storage {
-	_data: { [name: string]: string | null };
-	readonly length: number; // not use.
+    _data: { [name: string]: string | null };
+    readonly length: number; // not use.
 
-	constructor() {
-		this._data = {};
-		this.length = 0;
-	}
+    constructor() {
+        this._data = {};
+        this.length = 0;
+    }
 
-	setItem(id: string, val: string) {
-		return (this._data[id] = String(val));
-	}
+    setItem(id: string, val: string): string {
+        return (this._data[id] = String(val));
+    }
 
-	getItem(id: string) {
-		// eslint-disable-next-line no-prototype-builtins
-		return this._data.hasOwnProperty(id) ? this._data[id] : null;
-	}
-	removeItem(id: string) {
-		return delete this._data[id];
-	}
+    getItem(id: string): string | null {
+        // eslint-disable-next-line no-prototype-builtins
+        return this._data.hasOwnProperty(id) ? this._data[id] : null;
+    }
+    removeItem(id: string): boolean {
+        return delete this._data[id];
+    }
 
-	clear() {
-		return (this._data = {});
-	}
+    clear(): { [name: string]: string | null } {
+        return (this._data = {});
+    }
 
-	key(index: number): string | null {
-		return null;
-	}
+    key(index: number): string | null {
+        return null;
+    }
 }
 
-class LocalStorageManager {
-	bestScoreKey: string;
-	gameStateKey: string;
-	storage: Storage;
+declare global {
+    interface Window {
+        fakeStorage: FakeStorage;
+    }
+}
 
-	constructor() {
-		this.bestScoreKey = "bestScore";
-		this.gameStateKey = "gameState";
+export class LocalStorageManager {
+    bestScoreKey: string;
+    gameStateKey: string;
+    storage: Storage;
 
-		const supported = this.localStorageSupported();
-		this.storage = supported ? window.localStorage : window.fakeStorage;
-	}
+    constructor() {
+        this.bestScoreKey = "bestScore";
+        this.gameStateKey = "gameState";
 
-	localStorageSupported(): boolean {
-		const testKey = "test";
+        const supported = this.localStorageSupported();
+        this.storage = supported ? window.localStorage : window.fakeStorage;
+    }
 
-		try {
-			const storage = window.localStorage;
-			storage.setItem(testKey, "1");
-			storage.removeItem(testKey);
-			return true;
-		} catch (error) {
-			return false;
-		}
-	}
+    localStorageSupported(): boolean {
+        const testKey = "test";
 
-	// Best score getters/setters
-	getBestScore(): number {
-		return parseInt(this.storage.getItem(this.bestScoreKey) ?? "0", 10);
-	}
+        try {
+            const storage = window.localStorage;
+            storage.setItem(testKey, "1");
+            storage.removeItem(testKey);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
 
-	setBestScore(score: number): void {
-		this.storage.setItem(this.bestScoreKey, score.toString());
-	}
+    // Best score getters/setters
+    getBestScore(): number {
+        return parseInt(this.storage.getItem(this.bestScoreKey) ?? "0", 10);
+    }
 
-	// Game state getters/setters and clearing
-	getGameState(): GameManagerInfo | null {
-		const stateJSON = this.storage.getItem(this.gameStateKey);
-		return stateJSON ? (JSON.parse(stateJSON) as GameManagerInfo) : null;
-	}
+    setBestScore(score: number): void {
+        this.storage.setItem(this.bestScoreKey, score.toString());
+    }
 
-	setGameState(gameState: GameManagerInfo): void {
-		this.storage.setItem(this.gameStateKey, JSON.stringify(gameState));
-	}
+    // Game state getters/setters and clearing
+    getGameState(): GameManagerInfo | null {
+        const stateJSON = this.storage.getItem(this.gameStateKey);
+        return stateJSON ? (JSON.parse(stateJSON) as GameManagerInfo) : null;
+    }
 
-	clearGameState(): void {
-		this.storage.removeItem(this.gameStateKey);
-	}
+    setGameState(gameState: GameManagerInfo): void {
+        this.storage.setItem(this.gameStateKey, JSON.stringify(gameState));
+    }
+
+    clearGameState(): void {
+        this.storage.removeItem(this.gameStateKey);
+    }
 }

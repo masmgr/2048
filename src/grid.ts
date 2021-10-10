@@ -1,11 +1,14 @@
-type eachCellFunction = (x: number, y: number, tile: Tile | null) => void;
+import { Cell } from "./game_manager";
+import { Position, Tile, TileInfo } from "./tile";
 
-interface GridInfo {
+export type eachCellFunction = (x: number, y: number, tile: Tile | null) => void;
+
+export interface GridInfo {
 	size: number;
 	cells: (TileInfo | null)[][];
 }
 
-class Grid {
+export class Grid {
 	size: number;
 	cells: (Tile | null)[][];
 
