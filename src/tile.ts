@@ -1,14 +1,14 @@
-interface Position {
+export interface Position {
 	x: number;
 	y: number;
 }
 
-interface TileInfo {
+export interface TileInfo {
 	position: Position;
 	value: number | null;
 }
 
-class Tile {
+export class Tile {
 	x: number;
 	y: number;
 	value: number | null;

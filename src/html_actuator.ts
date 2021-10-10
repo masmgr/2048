@@ -1,4 +1,8 @@
-class HTMLActuator {
+import { MetaData } from "./game_manager";
+import { Grid } from "./grid";
+import { Position, Tile } from "./tile";
+
+export class HTMLActuator {
 	tileContainer: HTMLElement;
 	scoreContainer: HTMLElement;
 	bestContainer: HTMLElement;
