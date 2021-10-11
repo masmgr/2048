@@ -1,41 +1,5 @@
 import { GameManagerInfo } from "./game_manager";
 
-class FakeStorage implements Storage {
-    _data: { [name: string]: string | null };
-    readonly length: number; // not use.
-
-    constructor() {
-        this._data = {};
-        this.length = 0;
-    }
-
-    setItem(id: string, val: string): string {
-        return (this._data[id] = String(val));
-    }
-
-    getItem(id: string): string | null {
-        // eslint-disable-next-line no-prototype-builtins
-        return this._data.hasOwnProperty(id) ? this._data[id] : null;
-    }
-    removeItem(id: string): boolean {
-        return delete this._data[id];
-    }
-
-    clear(): { [name: string]: string | null } {
-        return (this._data = {});
-    }
-
-    key(index: number): string | null {
-        return null;
-    }
-}
-
-declare global {
-    interface Window {
-        fakeStorage: FakeStorage;
-    }
-}
-
 export class LocalStorageManager {
     bestScoreKey: string;
     gameStateKey: string;
@@ -45,8 +9,7 @@ export class LocalStorageManager {
         this.bestScoreKey = "bestScore";
         this.gameStateKey = "gameState";
 
-        const supported = this.localStorageSupported();
-        this.storage = supported ? window.localStorage : window.fakeStorage;
+        this.storage = window.localStorage;
     }
 
     localStorageSupported(): boolean {
