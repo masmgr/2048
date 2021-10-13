@@ -1,8 +1,17 @@
-import { Grid, GridInfo } from "./grid";
-import { HTMLActuator } from "./html_actuator";
-import { KeyboardInputManager } from "./keyboard_input_manager";
-import { LocalStorageManager } from "./local_storage_manager";
-import { Position, Tile } from "./tile";
+import { assertIsDefined } from "./assert_function";
+import { IGrid, Grid } from "./grid";
+import { IHTMLActuator, HTMLActuator } from "./html_actuator";
+import {
+    IKeyboardInputManager,
+    KeyboardInputManager,
+} from "./keyboard_input_manager";
+import {
+    ILocalStorageManager,
+    LocalStorageManager,
+} from "./local_storage_manager";
+import { Position } from "./position";
+import { GameManagerInfo } from "./serialize";
+import { ITile, Tile } from "./tile";
 
 export const Direction = {
     Up: 0,
@@ -38,29 +47,44 @@ export interface FarthestPosition {
     next: Cell;
 }
 
-export interface MetaData {
-    score: number;
-    over: boolean;
-    won: boolean;
-    bestScore: number;
-    terminated: boolean;
-}
-
-export interface GameManagerInfo {
-    grid: GridInfo;
+export interface IGameManager {
+    size: number;
+    inputManager: IKeyboardInputManager;
+    storageManager: ILocalStorageManager;
+    actuator: IHTMLActuator;
+    startTiles: number;
+    grid: IGrid;
     score: number;
     over: boolean;
     won: boolean;
     keepPlaying: boolean;
+
+    restart(): void;
+    keepPlay(): void;
+    isGameTerminated(): boolean;
+    setup(): void;
+    addStartTiles(): void;
+    addRandomTile(): void;
+    actuate(): void;
+    serialize(): GameManagerInfo;
+    prepareTiles(): void;
+    moveTile(tile: ITile, cell: Cell): void;
+    move(direction?: Direction): void;
+    getVector(direction: Direction): Vector;
+    buildTraversals(vector: Vector): Traversals;
+    findFarthestPosition(cell: Cell, vector: Vector): FarthestPosition;
+    movesAvailable(): boolean;
+    tileMatchesAvailable(): boolean;
+    positionsEqual(first: Position, second: Position): boolean;
 }
 
-export class GameManager {
+export class GameManager implements IGameManager {
     size: number;
-    inputManager: KeyboardInputManager;
-    storageManager: LocalStorageManager;
-    actuator: HTMLActuator;
+    inputManager: IKeyboardInputManager;
+    storageManager: ILocalStorageManager;
+    actuator: IHTMLActuator;
     startTiles: number;
-    grid: Grid;
+    grid: IGrid;
     score: number;
     over: boolean;
     won: boolean;
@@ -195,7 +219,7 @@ export class GameManager {
     }
 
     // Move a tile and its representation
-    moveTile(tile: Tile, cell: Cell): void {
+    moveTile(tile: ITile, cell: Cell): void {
         this.grid.cells[tile.x][tile.y] = null;
         this.grid.cells[cell.x][cell.y] = tile;
         tile.updatePosition(cell);
@@ -203,11 +227,11 @@ export class GameManager {
 
     // Move tiles on the grid in the specified direction
     move(direction?: Direction): void {
-        if (direction == null) return;
+        assertIsDefined(direction);
         // 0: up, 1: right, 2: down, 3: left
         if (this.isGameTerminated()) return; // Don't do anything if the game's over
 
-        let cell: Cell, tile: Tile | null;
+        let cell: Cell, tile: ITile | null;
 
         const vector = this.getVector(direction);
         const traversals = this.buildTraversals(vector);
