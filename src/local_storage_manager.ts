@@ -1,6 +1,19 @@
-import { GameManagerInfo } from "./game_manager";
+import { GameManagerInfo } from "./serialize";
 
-export class LocalStorageManager {
+export interface ILocalStorageManager {
+    bestScoreKey: string;
+    gameStateKey: string;
+    storage: Storage;
+
+    localStorageSupported(): boolean;
+    getBestScore(): number;
+    setBestScore(score: number): void;
+    getGameState(): GameManagerInfo | null;
+    setGameState(gameState: GameManagerInfo): void;
+    clearGameState(): void;
+}
+
+export class LocalStorageManager implements ILocalStorageManager {
     bestScoreKey: string;
     gameStateKey: string;
     storage: Storage;

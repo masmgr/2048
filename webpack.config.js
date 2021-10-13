@@ -10,7 +10,7 @@ module.exports = {
         rules: [
             {
                 // 拡張子 .ts の場合
-                test: /\.ts$/,
+                test: /\.tsx?$/,
                 // TypeScript をコンパイルする
                 use: "ts-loader",
             },
@@ -22,6 +22,7 @@ module.exports = {
     // 記載したほうがトラブルに巻き込まれにくい。
     resolve: {
         // 拡張子を配列で指定
-        extensions: [".ts", ".js"],
+        extensions: [".ts", ".tsx", ".js", ".json"],
     },
+    target: ["web", "es5"],
 };

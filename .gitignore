@@ -1,5 +1,6 @@
 .sass-cache/
 node_modules/
 js/
+dist/
 style/*.css
 style/*.css.map
